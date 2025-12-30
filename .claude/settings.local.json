@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(alembic current:*)",
+      "Bash(test:*)"
+    ]
+  }
+}

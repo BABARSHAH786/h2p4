@@ -48,12 +48,12 @@ export default function Modal({
         />
 
         {/* Modal */}
-        <div className="relative card w-full max-w-md p-6 md:p-8 transform transition-all">
+        <div className="relative card w-full max-w-md p-6 md:p-8 transform transition-all dark:bg-black dark:border-gray-800">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h2>
             <button
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors dark:hover:text-white dark:hover:bg-gray-800"
             >
               <svg
                 className="w-5 h-5"

@@ -52,14 +52,14 @@ export default function SignUpPage() {
   return (
     <div>
       <div className="text-center mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
           Create your account
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Already have an account?{" "}
           <Link
             href="/signin"
-            className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+            className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors dark:text-indigo-400"
           >
             Sign in
           </Link>
@@ -77,7 +77,7 @@ export default function SignUpPage() {
         )}
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Email address
           </label>
           <input
@@ -93,7 +93,7 @@ export default function SignUpPage() {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Password
           </label>
           <input
@@ -109,7 +109,7 @@ export default function SignUpPage() {
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Confirm password
           </label>
           <input
@@ -143,7 +143,7 @@ export default function SignUpPage() {
         </button>
       </form>
 
-      <p className="mt-6 text-center text-xs text-gray-500">
+      <p className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
         By signing up, you agree to our Terms of Service and Privacy Policy
       </p>
     </div>

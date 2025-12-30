@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app.database import get_session
 from app.models import Task
@@ -51,6 +51,9 @@ async def create_task(
         user_id=user_id,
         title=data.title.strip(),
         description=data.description.strip() if data.description else None,
+        category=data.category,
+        priority=data.priority,
+        due_date=data.due_date,
     )
 
     session.add(task)
@@ -106,7 +109,10 @@ async def update_task(
 
     task.title = data.title.strip()
     task.description = data.description.strip() if data.description else None
-    task.updated_at = datetime.utcnow()
+    task.category = data.category
+    task.priority = data.priority
+    task.due_date = data.due_date
+    task.updated_at = datetime.now(timezone.utc)
 
     await session.commit()
     await session.refresh(task)
@@ -136,7 +142,7 @@ async def toggle_complete(
         )
 
     task.completed = data.completed
-    task.updated_at = datetime.utcnow()
+    task.updated_at = datetime.now(timezone.utc)
 
     await session.commit()
     await session.refresh(task)

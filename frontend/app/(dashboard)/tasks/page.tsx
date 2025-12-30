@@ -8,6 +8,8 @@ import TaskForm from "@/components/TaskForm";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import type { Task, TaskCreate, TaskUpdate } from "@/types";
 
+type FilterType = "all" | "pending" | "completed";
+
 export default function TasksPage() {
   const { user } = useAuth();
   const {
@@ -24,6 +26,7 @@ export default function TasksPage() {
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [deletingTaskId, setDeletingTaskId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [filter, setFilter] = useState<FilterType>("all");
 
   const handleOpenForm = () => {
     setEditingTask(null);
@@ -80,6 +83,31 @@ export default function TasksPage() {
 
   const completedCount = tasks.filter((t) => t.completed).length;
   const totalCount = tasks.length;
+  const pendingCount = totalCount - completedCount;
+
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "pending") return !task.completed;
+    if (filter === "completed") return task.completed;
+    return true;
+  });
+
+  const filterButtons = [
+    { type: "all" as FilterType, label: "All", count: totalCount, icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+      </svg>
+    )},
+    { type: "pending" as FilterType, label: "Pending", count: pendingCount, icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    )},
+    { type: "completed" as FilterType, label: "Completed", count: completedCount, icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    )},
+  ];
 
   return (
     <div className="space-y-8">
@@ -134,9 +162,34 @@ export default function TasksPage() {
         </div>
       )}
 
+      {/* Filter Buttons */}
+      <div className="flex flex-wrap items-center gap-2">
+        {filterButtons.map((btn) => (
+          <button
+            key={btn.type}
+            onClick={() => setFilter(btn.type)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+              filter === btn.type
+                ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-500/30"
+                : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
+            }`}
+          >
+            {btn.icon}
+            <span>{btn.label}</span>
+            <span className={`px-2 py-0.5 rounded-full text-xs ${
+              filter === btn.type
+                ? "bg-white/20 text-white"
+                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+            }`}>
+              {btn.count}
+            </span>
+          </button>
+        ))}
+      </div>
+
       {/* Task List */}
       <TaskList
-        tasks={tasks}
+        tasks={filteredTasks}
         isLoading={isLoading}
         onToggleComplete={handleToggleComplete}
         onEdit={handleEdit}

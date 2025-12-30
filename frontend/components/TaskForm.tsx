@@ -11,6 +11,21 @@ interface TaskFormProps {
   task?: Task | null;
 }
 
+const CATEGORIES = [
+  "Work",
+  "Personal",
+  "Study",
+  "Urgent",
+  "Coding",
+  "Spec Driven Development",
+];
+
+const PRIORITIES = [
+  { value: "Low", emoji: "🟢", label: "Low 🟢" },
+  { value: "Medium", emoji: "🟡", label: "Medium 🟡" },
+  { value: "High", emoji: "🔴", label: "High 🔴" },
+];
+
 export default function TaskForm({
   isOpen,
   onClose,
@@ -19,6 +34,9 @@ export default function TaskForm({
 }: TaskFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("Personal");
+  const [priority, setPriority] = useState("Medium");
+  const [dueDate, setDueDate] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,9 +46,15 @@ export default function TaskForm({
     if (task) {
       setTitle(task.title);
       setDescription(task.description || "");
+      setCategory(task.category || "Personal");
+      setPriority(task.priority || "Medium");
+      setDueDate(task.due_date ? task.due_date.split("T")[0] : "");
     } else {
       setTitle("");
       setDescription("");
+      setCategory("Personal");
+      setPriority("Medium");
+      setDueDate("");
     }
     setError("");
   }, [task, isOpen]);
@@ -55,6 +79,9 @@ export default function TaskForm({
       await onSubmit({
         title: trimmedTitle,
         description: description.trim() || null,
+        category,
+        priority,
+        due_date: dueDate ? new Date(dueDate).toISOString() : null,
       });
       onClose();
     } catch (err) {
@@ -108,6 +135,63 @@ export default function TaskForm({
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Add more details about this task..."
             className="input-field resize-none"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+              Category <span className="text-red-500">*</span>
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="input-field"
+              required
+            >
+              {CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-2">
+              Priority <span className="text-red-500">*</span>
+            </label>
+            <select
+              id="priority"
+              name="priority"
+              value={priority}
+              onChange={(e) => setPriority(e.target.value)}
+              className="input-field"
+              required
+            >
+              {PRIORITIES.map((p) => (
+                <option key={p.value} value={p.value}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-2">
+            Due Date <span className="text-gray-400">(optional)</span>
+          </label>
+          <input
+            type="date"
+            id="dueDate"
+            name="dueDate"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            min={new Date().toISOString().split("T")[0]}
+            className="input-field"
           />
         </div>
 

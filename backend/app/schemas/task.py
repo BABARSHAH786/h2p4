@@ -8,6 +8,9 @@ class TaskCreate(BaseModel):
 
     title: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = Field(None, max_length=1000)
+    category: str = Field(default="Personal", max_length=50)
+    priority: str = Field(default="Medium", max_length=20)
+    due_date: Optional[datetime] = None
 
 
 class TaskUpdate(BaseModel):
@@ -15,6 +18,9 @@ class TaskUpdate(BaseModel):
 
     title: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = Field(None, max_length=1000)
+    category: str = Field(..., max_length=50)
+    priority: str = Field(..., max_length=20)
+    due_date: Optional[datetime] = None
 
 
 class TaskComplete(BaseModel):
@@ -31,6 +37,9 @@ class TaskResponse(BaseModel):
     title: str
     description: Optional[str]
     completed: bool
+    category: str
+    priority: str
+    due_date: Optional[datetime]
     created_at: datetime
     updated_at: datetime
 

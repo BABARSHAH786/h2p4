@@ -12,11 +12,6 @@ export default function ProfilePage() {
   const pendingTasks = totalTasks - completedTasks;
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  // Get tasks by priority
-  const highPriorityTasks = tasks.filter((t) => t.priority === "high").length;
-  const mediumPriorityTasks = tasks.filter((t) => t.priority === "medium").length;
-  const lowPriorityTasks = tasks.filter((t) => t.priority === "low" || !t.priority).length;
-
   // Get overdue tasks
   const overdueTasks = tasks.filter((t) => {
     if (!t.due_date || t.completed) return false;
@@ -166,36 +161,10 @@ export default function ProfilePage() {
             <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600 dark:text-gray-400">Due Today</span>
-                <span className="text-sm font-medium text-gray-900 dark:text-white">{dueTodayTasks} tasks</span>
+                <span className={`text-sm font-medium ${dueTodayTasks > 0 ? "text-orange-500" : "text-gray-900 dark:text-white"}`}>
+                  {dueTodayTasks} tasks
+                </span>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Priority Breakdown */}
-        <div className="card p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Priority Breakdown</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-red-50 dark:bg-red-900/20">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-red-500" />
-                <span className="text-sm text-gray-700 dark:text-gray-300">High Priority</span>
-              </div>
-              <span className="text-sm font-bold text-gray-900 dark:text-white">{highPriorityTasks}</span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/20">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                <span className="text-sm text-gray-700 dark:text-gray-300">Medium Priority</span>
-              </div>
-              <span className="text-sm font-bold text-gray-900 dark:text-white">{mediumPriorityTasks}</span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-green-50 dark:bg-green-900/20">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-green-500" />
-                <span className="text-sm text-gray-700 dark:text-gray-300">Low Priority</span>
-              </div>
-              <span className="text-sm font-bold text-gray-900 dark:text-white">{lowPriorityTasks}</span>
             </div>
           </div>
         </div>

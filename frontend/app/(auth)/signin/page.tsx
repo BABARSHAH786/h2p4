@@ -38,14 +38,14 @@ export default function SignInPage() {
   return (
     <div>
       <div className="text-center mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
           Welcome back
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"
-            className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+            className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors dark:text-indigo-400"
           >
             Sign up free
           </Link>
@@ -63,7 +63,7 @@ export default function SignInPage() {
         )}
 
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Email address
           </label>
           <input
@@ -79,7 +79,7 @@ export default function SignInPage() {
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Password
           </label>
           <input
@@ -119,7 +119,7 @@ export default function SignInPage() {
             <div className="w-full border-t border-gray-200" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-white text-gray-500">New to TaskFlow?</span>
+            <span className="px-4 bg-white dark:bg-black text-gray-500">New to TaskFlow?</span>
           </div>
         </div>
 
