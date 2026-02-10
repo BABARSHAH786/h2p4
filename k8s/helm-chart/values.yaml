@@ -1,0 +1,120 @@
+# Default values for todo-app Helm chart
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Namespace configuration
+namespace: todo-app
+
+# Frontend configuration
+frontend:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: todo-frontend
+    tag: "1.0.0"
+    pullPolicy: Never  # Use Never for local Minikube images
+  service:
+    type: NodePort
+    port: 3000
+    nodePort: 30080
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  config:
+    apiUrl: "http://backend-service:8000"
+    chatkitEnabled: "true"
+  probes:
+    liveness:
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 3
+    readiness:
+      initialDelaySeconds: 10
+      periodSeconds: 5
+      timeoutSeconds: 3
+      failureThreshold: 3
+
+# Backend configuration
+backend:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: todo-backend
+    tag: "1.0.0"
+    pullPolicy: Never  # Use Never for local Minikube images
+  service:
+    type: ClusterIP
+    port: 8000
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  config:
+    agentModel: "gpt-4o-mini"
+    maxConversationMessages: "50"
+    corsOrigins: "*"
+  probes:
+    liveness:
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 3
+    readiness:
+      initialDelaySeconds: 10
+      periodSeconds: 5
+      timeoutSeconds: 3
+      failureThreshold: 3
+
+# Database configuration (optional - can use external Neon PostgreSQL)
+database:
+  enabled: false  # Set to true for in-cluster PostgreSQL
+  image:
+    repository: postgres
+    tag: "16-alpine"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 5432
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: ""  # Use default storage class
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  env:
+    postgresDb: "todo"
+    postgresUser: "todouser"
+
+# Secrets configuration
+# IMPORTANT: Set these values during installation using --set flags
+# Example: helm install todo-app ./helm-chart --set secrets.databaseUrl="<base64-encoded-value>"
+secrets:
+  databaseUrl: ""  # Base64 encoded DATABASE_URL
+  betterAuthSecret: ""  # Base64 encoded BETTER_AUTH_SECRET
+  openaiApiKey: ""  # Base64 encoded OPENAI_API_KEY
+
+# Security context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  fsGroup: 1001
+
+# Rolling update strategy
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+    maxSurge: 1

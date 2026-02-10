@@ -1,0 +1,22 @@
+apiVersion: v2
+name: todo-app
+description: A Helm chart for Todo Chatbot with microservices architecture
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+
+dependencies: []
+
+keywords:
+  - todo
+  - chatbot
+  - microservices
+  - dapr
+  - kafka
+
+maintainers:
+  - name: Todo App Team
+    email: team@todoapp.com
+
+sources:
+  - https://github.com/yourusername/todo-app

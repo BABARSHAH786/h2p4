@@ -1,0 +1,67 @@
+{{- if .Values.notificationService.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.notificationService.name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: {{ .Values.notificationService.name }}
+    version: v1
+  annotations:
+    dapr.io/enabled: "{{ .Values.notificationService.dapr.enabled }}"
+    dapr.io/app-id: "{{ .Values.notificationService.dapr.appId }}"
+    dapr.io/app-port: "{{ .Values.notificationService.dapr.appPort }}"
+    dapr.io/log-level: "{{ .Values.notificationService.dapr.logLevel }}"
+spec:
+  replicas: {{ .Values.notificationService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.notificationService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.notificationService.name }}
+        version: v1
+      annotations:
+        dapr.io/enabled: "{{ .Values.notificationService.dapr.enabled }}"
+        dapr.io/app-id: "{{ .Values.notificationService.dapr.appId }}"
+        dapr.io/app-port: "{{ .Values.notificationService.dapr.appPort }}"
+        dapr.io/log-level: "{{ .Values.notificationService.dapr.logLevel }}"
+    spec:
+      containers:
+      - name: {{ .Values.notificationService.name }}
+        image: "{{ .Values.notificationService.image.repository }}:{{ .Values.notificationService.image.tag }}"
+        imagePullPolicy: {{ .Values.notificationService.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.notificationService.service.targetPort }}
+          name: http
+          protocol: TCP
+        env:
+        - name: EMAIL_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: EMAIL_API_KEY
+              optional: true
+        - name: PORT
+          value: "{{ .Values.notificationService.service.targetPort }}"
+        resources:
+          requests:
+            memory: {{ .Values.notificationService.resources.requests.memory }}
+            cpu: {{ .Values.notificationService.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.notificationService.resources.limits.memory }}
+            cpu: {{ .Values.notificationService.resources.limits.cpu }}
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: {{ .Values.notificationService.service.targetPort }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: {{ .Values.notificationService.service.targetPort }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+{{- end }}

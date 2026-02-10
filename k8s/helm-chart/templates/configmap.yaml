@@ -1,0 +1,26 @@
+{{- if .Values.frontend.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "todo-app.frontend.labels" . | nindent 4 }}
+data:
+  NEXT_PUBLIC_API_URL: {{ .Values.frontend.config.apiUrl | quote }}
+  NEXT_PUBLIC_CHATKIT_ENABLED: {{ .Values.frontend.config.chatkitEnabled | quote }}
+{{- end }}
+---
+{{- if .Values.backend.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "todo-app.backend.labels" . | nindent 4 }}
+data:
+  AGENT_MODEL: {{ .Values.backend.config.agentModel | quote }}
+  MAX_CONVERSATION_MESSAGES: {{ .Values.backend.config.maxConversationMessages | quote }}
+  CORS_ORIGINS: {{ .Values.backend.config.corsOrigins | quote }}
+{{- end }}

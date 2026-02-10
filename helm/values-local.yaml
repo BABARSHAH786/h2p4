@@ -1,0 +1,77 @@
+# Local development values (Minikube)
+# Override default values for local deployment
+
+global:
+  namespace: todo-app
+  imagePullPolicy: Never  # Use local images
+
+chatApi:
+  replicaCount: 1
+  image:
+    repository: chat-api
+    tag: latest
+    pullPolicy: Never
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  autoscaling:
+    enabled: false
+
+recurringTaskService:
+  replicaCount: 1
+  image:
+    repository: recurring-task-service
+    tag: latest
+    pullPolicy: Never
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  autoscaling:
+    enabled: false
+
+notificationService:
+  replicaCount: 1
+  image:
+    repository: notification-service
+    tag: latest
+    pullPolicy: Never
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "50m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  autoscaling:
+    enabled: false
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: frontend
+    tag: latest
+    pullPolicy: Never
+  service:
+    type: NodePort
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  autoscaling:
+    enabled: false
+  ingress:
+    enabled: false
+
+dapr:
+  logLevel: debug

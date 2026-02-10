@@ -1,0 +1,82 @@
+{{- if .Values.chatApi.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.chatApi.name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: {{ .Values.chatApi.name }}
+    version: v1
+  annotations:
+    dapr.io/enabled: "{{ .Values.chatApi.dapr.enabled }}"
+    dapr.io/app-id: "{{ .Values.chatApi.dapr.appId }}"
+    dapr.io/app-port: "{{ .Values.chatApi.dapr.appPort }}"
+    dapr.io/log-level: "{{ .Values.chatApi.dapr.logLevel }}"
+    dapr.io/enable-metrics: "{{ .Values.dapr.enableMetrics }}"
+    dapr.io/metrics-port: "{{ .Values.dapr.metricsPort }}"
+spec:
+  replicas: {{ .Values.chatApi.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.chatApi.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.chatApi.name }}
+        version: v1
+      annotations:
+        dapr.io/enabled: "{{ .Values.chatApi.dapr.enabled }}"
+        dapr.io/app-id: "{{ .Values.chatApi.dapr.appId }}"
+        dapr.io/app-port: "{{ .Values.chatApi.dapr.appPort }}"
+        dapr.io/log-level: "{{ .Values.chatApi.dapr.logLevel }}"
+    spec:
+      containers:
+      - name: {{ .Values.chatApi.name }}
+        image: "{{ .Values.chatApi.image.repository }}:{{ .Values.chatApi.image.tag }}"
+        imagePullPolicy: {{ .Values.chatApi.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.chatApi.service.targetPort }}
+          name: http
+          protocol: TCP
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: DATABASE_URL
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: OPENAI_API_KEY
+        - name: BETTER_AUTH_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: BETTER_AUTH_SECRET
+        - name: PORT
+          value: "{{ .Values.chatApi.service.targetPort }}"
+        resources:
+          requests:
+            memory: {{ .Values.chatApi.resources.requests.memory }}
+            cpu: {{ .Values.chatApi.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.chatApi.resources.limits.memory }}
+            cpu: {{ .Values.chatApi.resources.limits.cpu }}
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: {{ .Values.chatApi.service.targetPort }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: {{ .Values.chatApi.service.targetPort }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+{{- end }}

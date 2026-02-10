@@ -1,0 +1,27 @@
+{{- if and .Values.recurringTaskService.enabled .Values.recurringTaskService.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Values.recurringTaskService.name }}-hpa
+  namespace: {{ .Values.global.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Values.recurringTaskService.name }}
+  minReplicas: {{ .Values.recurringTaskService.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.recurringTaskService.autoscaling.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.recurringTaskService.autoscaling.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.recurringTaskService.autoscaling.targetMemoryUtilizationPercentage }}
+{{- end }}

@@ -1,0 +1,18 @@
+{{- if .Values.recurringTaskService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.recurringTaskService.name }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: {{ .Values.recurringTaskService.name }}
+spec:
+  type: {{ .Values.recurringTaskService.service.type }}
+  ports:
+  - port: {{ .Values.recurringTaskService.service.port }}
+    targetPort: {{ .Values.recurringTaskService.service.targetPort }}
+    protocol: TCP
+    name: http
+  selector:
+    app: {{ .Values.recurringTaskService.name }}
+{{- end }}
